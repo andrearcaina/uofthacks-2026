@@ -216,15 +216,25 @@ export default function Index() {
 
                 {comparisonResult && (
                 <Card>
-                    <BlockStack gap="400">
-                        <InlineStack gap="200">
-                            <Icon source={AlertCircleIcon} tone="magic"/>
-                            <Text as="h3" variant="headingMd">Manifesto Alignment</Text>
-                        </InlineStack>
-                        <Divider />
-                        <Text as="p">{comparisonResult}</Text>
-                    </BlockStack>
-                </Card>
+                <BlockStack gap="400">
+                    <InlineStack gap="200">
+                        {comparisonResult.toLowerCase().startsWith("y") ? (
+                            <>
+                                <Icon source={CheckIcon} tone="success"/>
+                                <Text as="h3" variant="headingMd" tone="success">On Brand</Text>
+                            </>
+                        ) : (
+                            <>
+                                <Icon source={AlertCircleIcon} tone="critical"/>
+                                <Text as="h3" variant="headingMd" tone="critical">Not On Brand</Text>
+                            </>
+                        )}
+                        <Text as="h3" variant="headingMd">— Manifesto Alignment</Text>
+                    </InlineStack>
+                    <Divider />
+                    <Text as="p">{comparisonResult}</Text>
+                </BlockStack>
+            </Card>
                 )}
             </BlockStack>
           </Layout.Section>
