@@ -13,16 +13,30 @@ class ManifestoService:
         self.backboard_client = BackboardClient(api_key=self.backboard_api_key)
 
     async def create_manifesto(self):
+        if self._check_manifesto_exists():
+            return self.view_manifesto()
 
+        print("Scanning store for data...")
         store_data = self._scan_store()
         if not store_data:
             return "Failed to retrieve store data."
 
         manifesto = await self._generate_manifesto_with_backboard(store_data)
 
-        self.save_manifesto_to_file(manifesto)
+        self._save_manifesto_to_file(manifesto)
 
         return {"manifesto": manifesto}
+
+    def view_manifesto(self):
+        if not self._check_manifesto_exists():
+            return "No manifesto found."
+
+        print("Reading existing manifesto...")
+
+        with open("MANIFESTO.md", "r") as f:
+            manifesto_content = f.read()
+
+        return {"manifesto": manifesto_content}
 
     def _scan_store(self):
         url = f"https://{self.shop}/admin/api/2024-01/graphql.json"
@@ -96,9 +110,12 @@ class ManifestoService:
             print(f"Backboard Error: {e}")
             return "Error generating manifesto."
         
-    def save_manifesto_to_file(self, manifesto: str, filename: str = "MANIFESTO.md"):
+    def _save_manifesto_to_file(self, manifesto: str, filename: str = "MANIFESTO.md"):
         try:
             with open(filename, "w") as f:
                 f.write(manifesto)
         except Exception as e:
             print(f"File Write Error: {e}")
+    
+    def _check_manifesto_exists(self, filename: str = "MANIFESTO.md") -> bool:
+        return os.path.isfile(filename)

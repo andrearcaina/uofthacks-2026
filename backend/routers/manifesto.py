@@ -22,4 +22,4 @@ async def generate_manifesto(
     )
     manifesto = await manifesto_service.create_manifesto()
 
-    return {"status": "success", "manifesto": manifesto}
+    return {"status": "success", "manifesto": manifesto["manifesto"]}
