@@ -5,6 +5,9 @@ import { useState } from "react";
 export default function Index() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isComparing, setIsComparing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<string | null>(null);
+  const [comparisonResult, setComparisonResult] = useState<string | null>(null);
 
   const runScan = () => {
     console.log("Calling Agent...");
@@ -18,6 +21,8 @@ export default function Index() {
     }
 
     setIsLoading(true);
+    setAnalysisResult(null);
+    setComparisonResult(null);
     try {
       const response = await fetch("/api/analyze", {
         method: "POST",
@@ -30,6 +35,7 @@ export default function Index() {
       if (response.ok) {
         const data = await response.json();
         console.log("API Response:", data);
+        setAnalysisResult(data.data?.analysis || JSON.stringify(data, null, 2));
         shopify.toast.show("Analysis complete!");
       } else {
         shopify.toast.show("API request failed");
@@ -39,6 +45,42 @@ export default function Index() {
       shopify.toast.show("Failed to connect to API");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const compareToManifesto = async () => {
+    if (!analysisResult) {
+      shopify.toast.show("No analysis result to compare");
+      return;
+    }
+
+    setIsComparing(true);
+    setComparisonResult(null);
+    try {
+      const response = await fetch("/api/compare", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          manifesto: "", // Backend reads from MANIFESTO.md
+          summary: analysisResult 
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Comparison Response:", data);
+        setComparisonResult(data.comparison || JSON.stringify(data, null, 2));
+        shopify.toast.show("Comparison complete!");
+      } else {
+        shopify.toast.show("Comparison request failed");
+      }
+    } catch (error) {
+      console.error("Error calling compare API:", error);
+      shopify.toast.show("Failed to connect to API");
+    } finally {
+      setIsComparing(false);
     }
   };
 
@@ -82,7 +124,32 @@ export default function Index() {
             </BlockStack>
           </Card>
         </Layout.Section>
-        
+
+        {analysisResult && (
+          <Layout.Section>
+            <Card>
+              <BlockStack gap="400">
+                <Text as="h3" variant="headingMd">Analysis Result</Text>
+                <Text as="p">{analysisResult}</Text>
+                <Button variant="primary" onClick={compareToManifesto}>
+                  Compare to Manifesto
+                </Button>
+              </BlockStack>
+            </Card>
+          </Layout.Section>
+        )}
+
+        {comparisonResult && (
+          <Layout.Section>
+            <Card>
+              <BlockStack gap="400">
+                <Text as="h3" variant="headingMd">Comparison Result</Text>
+                <Text as="p">{comparisonResult}</Text>
+              </BlockStack>
+            </Card>
+          </Layout.Section>
+        )}
+
         <Layout.Section variant="oneThird">
           <Card>
             <BlockStack gap="200">

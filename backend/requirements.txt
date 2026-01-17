@@ -1,0 +1,7 @@
+fastapi
+requests
+backboard
+uvicorn
+twelvelabs
+python-dotenv
+requests
