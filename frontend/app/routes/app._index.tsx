@@ -1,6 +1,28 @@
-import { Button, Card, Layout, Page, Text, BlockStack, TextField } from "@shopify/polaris";
+import {
+  Button,
+  Card,
+  Layout,
+  Page,
+  Text,
+  BlockStack,
+  TextField,
+  InlineStack,
+  Badge,
+  Box,
+  SkeletonBodyText,
+  Divider,
+  Icon,
+} from "@shopify/polaris";
+import {
+  SearchIcon,
+  MagicIcon, // Swapped SparklesIcon for this
+  CheckIcon,
+  AlertCircleIcon,
+  ClockIcon
+} from "@shopify/polaris-icons";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { useState } from "react";
+import { ManifestoWidget } from "../components/manifest_widget";
 
 export default function Index() {
   const [url, setUrl] = useState("");
@@ -8,11 +30,6 @@ export default function Index() {
   const [isComparing, setIsComparing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
   const [comparisonResult, setComparisonResult] = useState<string | null>(null);
-
-  const runScan = () => {
-    console.log("Calling Agent...");
-    shopify.toast.show("Agent Activation Signal Sent!"); 
-  };
 
   const analyzeUrl = async () => {
     if (!url) {
@@ -62,9 +79,9 @@ export default function Index() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          manifesto: "", // Backend reads from MANIFESTO.md
-          summary: analysisResult 
+        body: JSON.stringify({
+          manifesto: "", 
+          summary: analysisResult
         }),
       });
 
@@ -85,81 +102,134 @@ export default function Index() {
   };
 
   return (
-    <Page>
-      <TitleBar title="AGENT AI SYSTEM" />
-      <Layout>
-        <Layout.Section>
-          <Card>
-            <BlockStack gap="500">
-              <Text as="h2" variant="headingLg">
-                Agent Status: <span style={{color: "green"}}>Active & Watching</span>
-              </Text>
-              
-              <Text as="p">
-                Your AI Co-founder is currently monitoring the store for 
-                identity violations and trend opportunities.
-              </Text>
-              
-              <Button variant="primary" onClick={runScan}>
-                Run Identity Vibe Check
-              </Button>
-            </BlockStack>
-          </Card>
-        </Layout.Section>
-
-        <Layout.Section>
-          <Card>
-            <BlockStack gap="400">
-              <Text as="h3" variant="headingMd">Analyze URL</Text>
-              <TextField
-                label="URL"
-                value={url}
-                onChange={setUrl}
-                placeholder="https://example.com"
-                autoComplete="off"
-              />
-              <Button variant="primary" onClick={analyzeUrl} loading={isLoading}>
-                Analyze
-              </Button>
-            </BlockStack>
-          </Card>
-        </Layout.Section>
-
-        {analysisResult && (
+    <Page fullWidth>
+      <TitleBar title="Command Center" />
+      
+      <BlockStack gap="800">
+        <Layout>
           <Layout.Section>
+              <ManifestoWidget />
+          </Layout.Section>
+        </Layout>
+
+        {/* Main Intelligence Interface */}
+        <Layout>
+          <Layout.Section variant="oneThird">
             <Card>
-              <BlockStack gap="400">
-                <Text as="h3" variant="headingMd">Analysis Result</Text>
-                <Text as="p">{analysisResult}</Text>
-                <Button variant="primary" onClick={compareToManifesto}>
-                  Compare to Manifesto
+              <BlockStack gap="500">
+                <BlockStack gap="200">
+                  <Text as="h2" variant="headingMd">Intelligence Source</Text>
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    Input a target URL to extract insights and align with brand manifesto.
+                  </Text>
+                </BlockStack>
+                
+                <Box paddingBlockEnd="200">
+                    <TextField
+                    label="Resource URL"
+                    labelHidden
+                    value={url}
+                    onChange={setUrl}
+                    placeholder="https://youtube.com/watch?v=..."
+                    autoComplete="off"
+                    prefix={<Icon source={SearchIcon} />}
+                    clearButton
+                    onClearButtonClick={() => setUrl("")}
+                    disabled={isLoading}
+                    />
+                </Box>
+
+                <Button 
+                    variant="primary" 
+                    size="large"
+                    onClick={analyzeUrl} 
+                    loading={isLoading}
+                    icon={MagicIcon}
+                    fullWidth
+                >
+                    Analyze Signal
                 </Button>
+
+                {isLoading && (
+                    <Box paddingBlock="400">
+                        <BlockStack gap="200">
+                            <SkeletonBodyText lines={3} />
+                        </BlockStack>
+                    </Box>
+                )}
               </BlockStack>
             </Card>
+            
+            <Box paddingBlockStart="400">
+                <BlockStack gap="200" inlineAlign="center">
+                    <Badge tone="info" icon={ClockIcon}>Last scan: Just now</Badge>
+                </BlockStack>
+            </Box>
           </Layout.Section>
-        )}
 
-        {comparisonResult && (
+          {/* Results Area */}
           <Layout.Section>
-            <Card>
-              <BlockStack gap="400">
-                <Text as="h3" variant="headingMd">Comparison Result</Text>
-                <Text as="p">{comparisonResult}</Text>
-              </BlockStack>
-            </Card>
-          </Layout.Section>
-        )}
+            <BlockStack gap="400">
+                {!analysisResult && !isLoading && (
+                    <Card>
+                        <Box minHeight="300px" padding="1000">
+                          <BlockStack align="center" inlineAlign="center" gap="400">
+                              <Box background="bg-surface-secondary" padding="300" borderRadius="full">
+                                  <Icon source={SearchIcon} tone="subdued" />
+                              </Box>
+                              <Text as="p" variant="headingSm" tone="subdued">Awaiting Intelligence</Text>
+                          </BlockStack>
+                        </Box>
+                    </Card>
+                )}
 
-        <Layout.Section variant="oneThird">
-          <Card>
-            <BlockStack gap="200">
-              <Text as="h3" variant="headingMd">Memory (BackBoard)</Text>
-              <Text as="p" tone="subdued">Visual Style: Cyber-Y2K</Text>
-              <Text as="p" tone="subdued">Tone: Sassy</Text>
+                {analysisResult && (
+                <Card>
+                    <BlockStack gap="400">
+                        <InlineStack align="space-between">
+                            <InlineStack gap="200">
+                                <Icon source={CheckIcon} tone="success"/>
+                                <Text as="h3" variant="headingMd">Signal Analysis</Text>
+                            </InlineStack>
+                            <Badge tone="success">Processed</Badge>
+                        </InlineStack>
+                        
+                        <Divider />
+                        
+                        <Box padding="400" background="bg-surface-secondary" borderRadius="200">
+                            <Text as="p" variant="bodyMd" fontWeight="medium">{analysisResult}</Text>
+                        </Box>
+
+                        <InlineStack align="end">
+                            <Button 
+                                onClick={compareToManifesto} 
+                                icon={MagicIcon}
+                                disabled={isComparing}
+                                loading={isComparing}
+                            >
+                                Compare to Manifesto
+                            </Button>
+                        </InlineStack>
+                    </BlockStack>
+                </Card>
+                )}
+
+                {comparisonResult && (
+                <Card>
+                    <BlockStack gap="400">
+                        <InlineStack gap="200">
+                            <Icon source={AlertCircleIcon} tone="magic"/>
+                            <Text as="h3" variant="headingMd">Manifesto Alignment</Text>
+                        </InlineStack>
+                        <Divider />
+                        <Text as="p">{comparisonResult}</Text>
+                    </BlockStack>
+                </Card>
+                )}
             </BlockStack>
-          </Card>
-        </Layout.Section>
-      </Layout>
+          </Layout.Section>
+        </Layout>
+      </BlockStack>
     </Page>
   );
 }
