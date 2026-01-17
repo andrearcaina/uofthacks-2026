@@ -8,9 +8,8 @@ from routers.manifesto import manifesto_router
 from routers.twelvelabs import twelvelabs_router
 from dotenv import load_dotenv
 
-load_dotenv()
-
 app = FastAPI()
+
 app.include_router(manifesto_router, prefix="/api/manifesto")
 app.include_router(twelvelabs_router, prefix="/api/twelvelabs")
 
