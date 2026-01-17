@@ -3,7 +3,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 export async function action({ request }: ActionFunctionArgs) {
   const body = await request.json();
   
-  const response = await fetch("http://localhost:8000/api/analyze", {
+  const response = await fetch("http://localhost:8000/api/twelvelabs/analyze", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
