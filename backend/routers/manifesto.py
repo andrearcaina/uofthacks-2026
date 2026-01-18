@@ -8,8 +8,7 @@ manifesto_router = APIRouter()
 
 @manifesto_router.post("/generate")
 async def generate_manifesto(
-    request: ManifestoRequest, 
-    settings: dict = Depends(get_config),
+    request: ManifestoRequest,
     client: BackboardClient = Depends(get_backboard_client)
 ):
     
@@ -18,8 +17,6 @@ async def generate_manifesto(
     manifesto_service = ManifestoService(
         shop=request.shop_domain,
         token=request.access_token,
-        shopify_api_key=settings["shopify_api_key"],
-        shopify_api_secret=settings["shopify_api_secret"],
         client=client
     )
     manifesto = await manifesto_service.create_manifesto()

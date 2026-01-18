@@ -4,13 +4,11 @@ from backboard import BackboardClient
 from typing import List
 
 class ManifestoService:
-    def __init__(self, shop: str, token: str, shopify_api_key: str, shopify_api_secret: str, client: BackboardClient = None):
+    def __init__(self, shop: str, token: str, client: BackboardClient = None):
         self.shop = shop
         self.token = token
-        self.shopify_api_key = shopify_api_key
-        self.shopify_api_secret = shopify_api_secret
         self.backboard_client = client
-        
+
     async def create_manifesto(self):
         if self._check_manifesto_exists():
             return self.view_manifesto()
@@ -38,7 +36,7 @@ class ManifestoService:
         return {"manifesto": manifesto_content}
 
     def _scan_store(self):
-        url = f"https://{self.shop}/admin/api/2024-01/graphql.json"
+        url = f"https://{self.shop}/admin/api/2026-01/graphql.json"
         headers = {
             "Content-Type": "application/json",
             "X-Shopify-Access-Token": self.token
@@ -92,9 +90,6 @@ class ManifestoService:
             )
 
             thread = await self.backboard_client.create_thread(assistant.assistant_id)
-
-
-
 
             response = await self.backboard_client.add_message(
                 thread_id=thread.thread_id,

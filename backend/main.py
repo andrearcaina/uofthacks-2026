@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.manifesto import manifesto_router
 from routers.twelvelabs import twelvelabs_router
 from routers.compare_manifesto import compare_manifesto_router
+from routers.campaign import campaign_router
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,6 +17,7 @@ app = FastAPI()
 app.include_router(manifesto_router, prefix="/api/manifesto")
 app.include_router(twelvelabs_router, prefix="/api/twelvelabs")
 app.include_router(compare_manifesto_router, prefix="/api/compare")
+app.include_router(campaign_router, prefix="/api/campaign")
 
 app.add_middleware(
     CORSMiddleware,
