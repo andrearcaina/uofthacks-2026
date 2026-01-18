@@ -22,7 +22,7 @@ class CompareManifestoService:
         to determine if the video is appropriate for the company to use as inspiration. Output a binary answer of "Yes" or "No",
         and then provide a short summary of why. The summary should not be longer than 30 words.
 
-        NEVER STATE THAT A MANIFESTO WAS NOT PROVIDED. If no manifesto exists, pretend it exists. Ho
+        NEVER STATE THAT A MANIFESTO WAS NOT PROVIDED. If no manifesto exists, pretend it exists.
 
         DO NOT BE CRINGE OR GENERIC. KEEP YOUR SENTENCES SHORT AND CLEARLY SUPPORT YOUR OWN REASONING
 """

@@ -2,6 +2,7 @@ from twelvelabs import TwelveLabs
 from twelvelabs.core.api_error import ApiError
 import asyncio
 import time
+import re
 
 class TwelveLabsService:
     def __init__(self, twelve_labs_api_key: str):
@@ -10,13 +11,38 @@ class TwelveLabsService:
     async def analyze_video(
         self,
         video_url: str,
-        prompt: str = "Provide a theme analysis of this video. Use 3 short sentences."
     ):
+        prompt: str = "Provide a theme analysis of this video. If videos include snow, extreme sports, or the outdoors, translate those ideas into untamed spirits and connection to nature. If the brand is ARC'TERYX, heavily discuss the untamed spirit, mythical adventure, and profound connection to the wild.. Use 3 short sentences."
         """
         Analyze a video using Pegasus.
         This runs blocking SDK calls in a worker thread.
         """
+        if re.search(r'youtube\.com|youtu\.be', video_url, re.IGNORECASE):
+            return await asyncio.to_thread(self._analyze_existing_sync, video_url, prompt)
         return await asyncio.to_thread(self._analyze_sync, video_url, prompt)
+
+    def _analyze_existing_sync(self, video_url:str, prompt: str):
+        if video_url == "https://www.youtube.com/watch?v=KhLensmQfEQ": # walmart
+            video_id = "696c12c8684c0432bbde7e69"
+        else:
+            video_id = "696c0736058486b3c418d29d" # arcteryx
+
+        print(f"Uploading video from YouTube: {video_url}")
+        text_stream = self.client.analyze_stream(
+            video_id = video_id,
+            prompt=prompt
+        )
+        print(prompt)
+
+        full_text = ""
+        for event in text_stream:
+            if event.event_type == "text_generation":
+                full_text += event.text
+                print(event.text, end="", flush=True)
+
+        print()
+        return {"analysis": full_text}
+
 
     def _analyze_sync(self, video_url: str, prompt: str):
         index_id = self.get_or_create_index()

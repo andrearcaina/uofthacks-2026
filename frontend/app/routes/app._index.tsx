@@ -218,7 +218,7 @@ export default function Index() {
                 <Card>
                 <BlockStack gap="400">
                     <InlineStack gap="200">
-                        {comparisonResult.toLowerCase().startsWith("y") ? (
+                      {comparisonResult.toLowerCase().startsWith("y") ? (
                             <>
                                 <Icon source={CheckIcon} tone="success"/>
                                 <Text as="h3" variant="headingMd" tone="success">On Brand</Text>
