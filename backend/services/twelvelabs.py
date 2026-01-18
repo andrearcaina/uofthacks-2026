@@ -40,7 +40,12 @@ class TwelveLabsService:
                 full_text += event.text
                 print(event.text, end="", flush=True)
 
-        print()
+        try:
+            with open("SUMMARY.md", "w") as f:
+                f.write(full_text)
+        except Exception as e:
+            print(f"File Write Error: {e}")
+        
         return {"analysis": full_text}
 
 
@@ -90,7 +95,11 @@ class TwelveLabsService:
                 full_text += event.text
                 print(event.text, end="", flush=True)
 
-        print()
+        try:
+            with open("SUMMARY.md", "w") as f:
+                f.write(full_text)
+        except Exception as e:
+            print(f"File Write Error: {e}")
         return {"analysis": full_text}
 
 

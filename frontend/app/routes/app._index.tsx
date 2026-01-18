@@ -24,12 +24,20 @@ import { TitleBar } from "@shopify/app-bridge-react";
 import { useState } from "react";
 import { ManifestoWidget } from "../components/manifest_widget";
 
+const getYouTubeVideoId = (url: string): string | null => {
+  const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+};
+
 export default function Index() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isComparing, setIsComparing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
   const [comparisonResult, setComparisonResult] = useState<string | null>(null);
+
+  const videoId = getYouTubeVideoId(url)
 
   const analyzeUrl = async () => {
     if (!url) {
@@ -138,6 +146,30 @@ export default function Index() {
                     disabled={isLoading}
                     />
                 </Box>
+
+                {/* Video Embed Preview */}
+                {videoId && (
+                  <div style={{ borderRadius: "8px", overflow: "hidden" }}>
+                    <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+                      <iframe
+                        src={`https://www.youtube.com/embed/${videoId}?autoplay=0`}
+                        title="Video Preview"
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                          border: "none",
+                          borderRadius: "8px"
+                        }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                )}
+
 
                 <Button 
                     variant="primary" 

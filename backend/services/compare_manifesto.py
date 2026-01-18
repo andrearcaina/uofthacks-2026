@@ -44,7 +44,13 @@ class CompareManifestoService:
                 stream=False
             )
 
+            try:
+                with open("COMPARISON.md", "w") as f:
+                    f.write(response.content)
+            except Exception as e:
+                print(f"File Write Error: {e}")
+
             return response.content
         except Exception as e:
             print(f"Backboard Error: {e}")
-            return "Error generating manifesto."
+            return "Error generating comparison."

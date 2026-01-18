@@ -1,0 +1,1 @@
+Yes. The video's focus on untamed spirit, mythical adventure, and equipping seekers for extreme, wild environments aligns perfectly with our manifesto.
