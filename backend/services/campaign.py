@@ -2,6 +2,7 @@ import requests
 from typing import Dict, List, Optional
 from backboard import BackboardClient
 import time
+import random
 
 class CampaignService:
     def __init__(self, client: BackboardClient):
@@ -30,8 +31,13 @@ class CampaignService:
     async def generate_video_scripts(self) -> Dict:
             time.sleep(15)
 
+            list = ["elevenlabs1.mp4", "elevenlabs2.mp4", "elevenlabs3.mp4", "elevenlabs4.mp4", "elevenlabs5.mp4"]
+    
+            # randomly select 2 items from the list
+            random_selection = random.sample(list, 2)
+
             return {
-                "elevenlabs_video_file_paths": ["elevenlabs1.mp4", "elevenlabs2.mp4"],
+                "elevenlabs_video_file_paths": random_selection,
             }
     
     async def generate_draft_email(self) -> Dict:
