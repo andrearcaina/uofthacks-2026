@@ -47,7 +47,7 @@ This allows ShopEcho to respond, recommend, and generate content that *sounds li
 - Shopify App Framework
 - Shopify Remix + Polaris Web UI Framework
 - Python + FastAPI
-- LLMs (Backboard, ElevenLabs, TwelveLabs)
+- LLMs (Backboard - Opus & Gemini, ElevenLabs, TwelveLabs)
 - Agentic orchestration patterns
 
 ---
