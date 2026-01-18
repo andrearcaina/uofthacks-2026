@@ -3,5 +3,6 @@ requests
 backboard
 uvicorn
 twelvelabs
+elevenlabs
 python-dotenv
 requests
